@@ -2,18 +2,18 @@
 #include "strategy.hpp"
 #include "risk_manager.hpp"
 #include "order_executor.hpp"
-#include "utils/logger.hpp"
+#include "Utils/Logger.hpp"
 #include "common/config.hpp"
 #include <csignal>
 #include <atomic>
 #include <thread>
 #include <memory>
-
+using namespace Utils::Logger;
 namespace {
     std::atomic<bool> running{true};
     
     void signalHandler(int signal) {
-        spdlog::info("Received signal {}, shutting down...", signal);
+        logger.Info("Received signal {}, shutting down...", signal);
         running = false;
     }
 }
@@ -41,7 +41,7 @@ public:
             shutdown();
             
         } catch (const std::exception& e) {
-            spdlog::critical("Fatal error in trading engine: {}", e.what());
+            logger.Trace("Fatal error in trading engine: {}", e.what());
             shutdown();
             throw;
         }
@@ -51,7 +51,7 @@ private:
     void initialize() {
         // 初始化日志
         Logger::init();
-        spdlog::info("Initializing trading engine...");
+        logger.Info("Initializing trading engine...");
         
         // 加载配置
         config_ = std::make_unique<Config>("config.json");
@@ -66,7 +66,7 @@ private:
         signal(SIGINT, signalHandler);
         signal(SIGTERM, signalHandler);
         
-        spdlog::info("Trading engine initialized successfully");
+        logger.Info("Trading engine initialized successfully");
     }
 
     void processMarketData() {
@@ -76,7 +76,7 @@ private:
                 strategy_->onMarketData(market_data);
             }
         } catch (const std::exception& e) {
-            spdlog::error("Error processing market data: {}", e.what());
+            logger.Trace("Error processing market data: {}", e.what());
         }
     }
 
@@ -90,7 +90,7 @@ private:
                 }
             }
         } catch (const std::exception& e) {
-            spdlog::error("Error processing signals: {}", e.what());
+            logger.Trace("Error processing signals: {}", e.what());
         }
     }
 
@@ -100,20 +100,20 @@ private:
             auto metrics = risk_manager_->getRiskMetrics();
             
             // 记录风险指标
-            spdlog::debug("Risk metrics - Drawdown: {:.2f}%, Leverage: {:.2f}x",
+            logger.debug("Risk metrics - Drawdown: {:.2f}%, Leverage: {:.2f}x",
                 metrics["drawdown"] * 100,
                 metrics["leverage"]);
                 
         } catch (const std::exception& e) {
-            spdlog::error("Error updating risk metrics: {}", e.what());
+            logger.Trace("Error updating risk metrics: {}", e.what());
         }
     }
 
     void shutdown() {
-        spdlog::info("Shutting down trading engine...");
+        logger.Info("Shutting down trading engine...");
         order_executor_->stop();
         // 保存状态和清理资源
-        spdlog::info("Trading engine shutdown complete");
+        logger.Info("Trading engine shutdown complete");
     }
 
     std::shared_ptr<Order> createOrder(const Strategy::Signal& signal) {
@@ -150,12 +150,13 @@ private:
 };
 
 int main() {
+  
     try {
         TradingEngine engine;
         engine.run();
         return 0;
     } catch (const std::exception& e) {
-        spdlog::critical("Fatal error: {}", e.what());
+        logger.Trace("Fatal error: {}", e.what());
         return 1;
     }
 } 
