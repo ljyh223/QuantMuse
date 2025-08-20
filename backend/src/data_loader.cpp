@@ -4,6 +4,8 @@
 #include "Utils/Logger.hpp"
 #include <stdexcept>
 
+
+using namespace Utils::Logger;
 namespace py = pybind11;
 
 namespace trading {
@@ -18,7 +20,7 @@ public:
             fetcher_ = data_service_.attr("YahooFetcher")();
             
         } catch (const std::exception& e) {
-            spdlog::error("Failed to initialize Python interface: {}", e.what());
+            logger.Error("Failed to initialize Python interface: {}", e.what());
             throw;
         }
     }
@@ -29,7 +31,7 @@ public:
             return convertPyToMarketData(data, symbol);
             
         } catch (const std::exception& e) {
-            spdlog::error("Failed to load market data for {}: {}", symbol, e.what());
+            logger.Error("Failed to load market data for {}: {}", symbol, e.what());
             throw;
         }
     }
@@ -53,7 +55,7 @@ public:
             return result;
             
         } catch (const std::exception& e) {
-            spdlog::error("Failed to load historical data for {}: {}", symbol, e.what());
+            logger.Error("Failed to load historical data for {}: {}", symbol, e.what());
             throw;
         }
     }
@@ -70,7 +72,7 @@ public:
             fetcher_.attr("start_websocket")(symbol, py_callback);
             
         } catch (const std::exception& e) {
-            spdlog::error("Failed to subscribe to real-time data for {}: {}", symbol, e.what());
+            logger.Error("Failed to subscribe to real-time data for {}: {}", symbol, e.what());
             throw;
         }
     }
