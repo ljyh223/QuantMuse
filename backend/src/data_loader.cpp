@@ -1,7 +1,7 @@
 #include "data_loader.hpp"
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
-#include <spdlog/spdlog.h>
+#include "Utils/Logger.hpp"
 #include <stdexcept>
 
 namespace py = pybind11;
