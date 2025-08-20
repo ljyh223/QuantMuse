@@ -13,8 +13,8 @@ find_package(Boost REQUIRED COMPONENTS system)  # Boost
 
 # 添加头文件路径
 include_directories(${CMAKE_SOURCE_DIR}/include)
-add_subdirectory(${PROJECT_SOURCE_DIR}/Logger) # 项目的存放位置
-target_link_libraries(executable_name Utils::Logger) # 链接库
+add_subdirectory(${PROJECT_SOURCE_DIR}/Logger)
+target_link_libraries(executable_name Utils::Logger)
 # 收集源文件
 file(GLOB_RECURSE SOURCES "src/*.cpp")
 
