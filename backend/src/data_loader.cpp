@@ -5,7 +5,6 @@
 #include <stdexcept>
 
 
-using namespace Utils::Logger;
 namespace py = pybind11;
 
 namespace trading {

@@ -6,6 +6,7 @@
 #include <pybind11/numpy.h>
 #include "common/types.hpp"
 
+using namespace Utils::Logger;
 namespace trading {
 
 class DataLoader {

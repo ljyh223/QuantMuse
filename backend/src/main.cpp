@@ -8,7 +8,7 @@
 #include <atomic>
 #include <thread>
 #include <memory>
-using namespace Utils::Logger;
+
 namespace {
     std::atomic<bool> running{true};
     
